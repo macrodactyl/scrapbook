@@ -2,7 +2,7 @@ int moverCount = 100;
 Mover[] movers = new Mover[moverCount];
 
 void setup() {
-  size(1300, 800);
+  fullScreen();
   background(0);
   stroke(255);
   colorMode(HSB);
