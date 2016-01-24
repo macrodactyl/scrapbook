@@ -17,8 +17,9 @@ public class Mover {
   float y = 0;
   float direction = random(PI*2);
   float direction_noise_coordinate = random(1000);
-  float distance = random(2);
-  color colour = color(floor(random(256)), 255, 128, 255);
+  float distance = random(1) + 1;
+  float torque = random(1) + .5;
+  color colour = color(floor(random(256)), 64, 255, 255);
   int stroke_width = 1;
   
   void move() {
@@ -35,7 +36,7 @@ public class Mover {
     y = new_y;
     
     direction_noise_coordinate += 0.01;
-    float direction_change = noise(direction_noise_coordinate) - 0.5;
+    float direction_change = (noise(direction_noise_coordinate) - 0.5) * torque;
     direction += direction_change;
     
     if (random(1) > 0.999)
