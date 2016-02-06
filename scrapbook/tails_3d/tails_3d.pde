@@ -91,6 +91,10 @@ class Creature {
         break;
 }
     
+    // a linked list could be more efficient here
+    //import java.util.*;
+    //LinkedList list = new LinkedList();
+    
     for (int i = body.length - 1; i > 0; i--) {
       body[i][0] = body[i-1][0];
       body[i][1] = body[i-1][1];
