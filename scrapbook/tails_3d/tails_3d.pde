@@ -13,7 +13,7 @@ float subject_y = 0;
 float subject_z = 0;
 
 void setup() {
-  fullScreen(P3D);
+  size(1000, 1000, P3D);
   
   for (int i = 0; i < creatureCount; i++) {
     creatures[i] = new Creature(floor(random(-100, 100)), floor(random(-100, 100)), floor(random(-100, 100)));
