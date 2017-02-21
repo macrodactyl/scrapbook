@@ -1,4 +1,8 @@
-int creatureCount = 100;
+import shapes3d.*;
+import shapes3d.animation.*;
+import shapes3d.utils.*;
+
+int creatureCount = 10;
 float speed = 5;
 Creature[] creatures = new Creature[creatureCount];
 
@@ -12,9 +16,11 @@ float subject_x = 0;
 float subject_y = 0;
 float subject_z = 0;
 
+PApplet that = this;
+
 void setup() {
-  size(2000, 1000, P3D);
-  //fullScreen(P3D);
+  //size(1000, 500, P3D);
+  fullScreen(P3D);
   
   for (int i = 0; i < creatureCount; i++) {
     creatures[i] = new Creature(floor(random(-100, 100)), floor(random(-100, 100)), floor(random(-100, 100)));
@@ -113,7 +119,14 @@ class Creature {
     stroke(col);
 
     for (int i = body.length - 1; i > 0; i--) {
-      line(body[i][0], body[i][1], body[i][2], body[i-1][0], body[i-1][1], body[i-1][2]);
+      Tube tube = new Tube(that, 1, 3);
+      tube.setSize(1,1,1,1);
+      tube.fill(col);
+      tube.drawMode(Shape3D.SOLID);
+      tube.setWorldPos(body[i][0], body[i][1], body[i][2], body[i-1][0], body[i-1][1], body[i-1][2]);
+      tube.draw();
+      //line(body[i][0], body[i][1], body[i][2], body[i-1][0], body[i-1][1], body[i-1][2]);
+      
     }
 
   }
