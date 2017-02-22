@@ -1,30 +1,60 @@
-var regexSearch = /size ?\( ?(\w*), ?(\w*), ?(\w*) ?\) ?;/;
-var regexReplace = "size(window.innerWidth, window.innerHeight, $3);"
+var processingInstance = undefined;
+
+var regexSearch_size = /size ?\( ?(\w*), ?(\w*), ?(\w*) ?\) ?;/;
+var regexReplace_size = "size(window.innerWidth, window.innerHeight, $3);";
+
+var regexSearch_fullScreen = /fullScreen\(\);/;
+var regexReplace_fullScreen = "size(window.innerWidth, window.innerHeight);";
 
 loadSketch = function(code) {
-    processingCode = code;
-    updatedCode = processingCode.replace(regexSearch, regexReplace);
-    compiledCode = Processing.compile(updatedCode)
 
-    canvas = document.getElementById('mysketch');
+    if (typeof processingInstance !== 'undefined') {
+        processingInstance.exit();
+    }
 
-    processingInstance = new Processing(canvas, compiledCode);
+    // remove existing canvas element and replace with afresh one.
+    // this is necessary when switching between 2d and 3d - using the same canvas
+    // causes an error.
+    $('#mysketch').remove();
+    $('#container').append('<canvas id="mysketch"></canvas>');
+
+    var code = code.replace(regexSearch_size, regexReplace_size);
+    code = code.replace(regexSearch_fullScreen, regexReplace_fullScreen);
+    code = Processing.compile(code)
+
+    var canvas = $('#mysketch')[0];
+
+    processingInstance = new Processing(canvas, code);
+}
+
+fillDropDown = function(sketchList) {
+    for (var i = 0; i < sketchList.length; i++) {
+        $('#sketchlist').append($('<option>', {
+            value: sketchList[i].name,
+            text: sketchList[i].name
+        }));
+    }
 }
 
 $(document).ready(function(){
 
-    // import GitHub from 'github-api';
-
-    // var gh = new GitHub({
-    //    username: 'FOO',
-    //    // password: 'NotFoo'
-    //    /* also acceptable:
-    //       token: 'MY_OAUTH_TOKEN'
-    //     */
-    // });
-
+    // populate the dropdown
     $.ajax({
-        url : "./scrapbook/tails_3d/tails_3d.pde",
-        success : loadSketch
+        url : "https://api.github.com/repos/macrodactyl/scrapbook/contents/scrapbook",
+        success: fillDropDown
     });
+
+    // load a new sketch upon dropdown change
+    $('#sketchlist').change(function(){
+        var sketchName = $('#sketchlist option:selected').val();
+        console.log(sketchName);
+
+        $.ajax({
+            url : "./scrapbook/" + sketchName + "/" + sketchName + ".pde",
+            success : loadSketch
+        });        
+    });
+
+    // select the first sketch from the dropdown
+    $('#sketchlist > option:eq(0)').prop('selected', true);
 });
