@@ -12,6 +12,17 @@ loadSketch = function(code) {
 }
 
 $(document).ready(function(){
+
+    // import GitHub from 'github-api';
+
+    // var gh = new GitHub({
+    //    username: 'FOO',
+    //    // password: 'NotFoo'
+    //    /* also acceptable:
+    //       token: 'MY_OAUTH_TOKEN'
+    //     */
+    // });
+
     $.ajax({
         url : "./scrapbook/tails_3d/tails_3d.pde",
         success : loadSketch
