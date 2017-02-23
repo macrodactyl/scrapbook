@@ -36,12 +36,25 @@ fillDropDown = function(sketchList) {
     }
 }
 
+function getParameterByName(name, url) {
+    if (!url) {
+      url = window.location.href;
+    }
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
 $(document).ready(function(){
 
     // populate the dropdown
     $.ajax({
         url : "https://api.github.com/repos/macrodactyl/scrapbook/contents/scrapbook",
-        success: fillDropDown
+        success: fillDropDown,
+        async: false
     });
 
     // load a new sketch upon dropdown change
@@ -55,6 +68,13 @@ $(document).ready(function(){
         });        
     });
 
-    // select the first sketch from the dropdown
-    $('#sketchlist > option:eq(0)').prop('selected', true);
+    var urlSketch = getParameterByName('sketch');
+    console.log(urlSketch);
+    if (urlSketch !== null) {
+        $('#sketchlist > option[value="' + urlSketch + '"]').prop('selected', true).change();
+    } else {
+        // select the first sketch from the dropdown
+        $('#sketchlist > option:eq(0)').prop('selected', true).change();        
+    }
+
 });
