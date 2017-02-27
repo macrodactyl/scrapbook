@@ -1,10 +1,16 @@
 var processingInstance = undefined;
 
-var regexSearch_size = /size ?\( ?(\w*), ?(\w*), ?(\w*) ?\) ?;/;
-var regexReplace_size = "size(window.innerWidth, window.innerHeight, $3);";
+var regexSearch_size = /size ?\( ?(\w*), ?(\w*) ?\) ?;/;
+var regexReplace_size = "size(window.innerWidth, window.innerHeight);";
+
+var regexSearch_size_renderer = /size ?\( ?(\w*), ?(\w*), ?(\w*) ?\) ?;/;
+var regexReplace_size_renderer = "size(window.innerWidth, window.innerHeight, $3);";
 
 var regexSearch_fullScreen = /fullScreen\(\);/;
 var regexReplace_fullScreen = "size(window.innerWidth, window.innerHeight);";
+
+var regexSearch_fullScreen_renderer = /fullScreen\((\w+)\);/;
+var regexReplace_fullScreen_renderer = "size(window.innerWidth, window.innerHeight, $1);";
 
 loadSketch = function(code) {
 
@@ -18,8 +24,12 @@ loadSketch = function(code) {
     $('#mysketch').remove();
     $('#container').append('<canvas id="mysketch"></canvas>');
 
-    var code = code.replace(regexSearch_size, regexReplace_size);
+    code = code.replace(regexSearch_size, regexReplace_size);
+    code = code.replace(regexSearch_size_renderer, regexReplace_size_renderer);
     code = code.replace(regexSearch_fullScreen, regexReplace_fullScreen);
+    code = code.replace(regexSearch_fullScreen_renderer, regexReplace_fullScreen_renderer);
+    console.log(code);
+
     code = Processing.compile(code)
 
     var canvas = $('#mysketch')[0];
