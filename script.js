@@ -12,7 +12,7 @@ loadSketch = function(code) {
         processingInstance.exit();
     }
 
-    // remove existing canvas element and replace with afresh one.
+    // remove existing canvas element and replace with a fresh one.
     // this is necessary when switching between 2d and 3d - using the same canvas
     // causes an error.
     $('#mysketch').remove();
@@ -48,33 +48,39 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
+function getSketch(sketchName) {
+    $.ajax({
+        url : "./scrapbook/" + sketchName + "/" + sketchName + ".pde",
+        success : function(result) {
+            loadSketch(result);
+            $('#sketchlist > option[value="' + sketchName + '"]').prop('selected', true)
+        }
+    });
+    
+}
+
 $(document).ready(function(){
 
     // populate the dropdown
     $.ajax({
         url : "https://api.github.com/repos/macrodactyl/scrapbook/contents/scrapbook",
         success: fillDropDown,
-        async: false
+        async: true
     });
 
     // load a new sketch upon dropdown change
     $('#sketchlist').change(function(){
         var sketchName = $('#sketchlist option:selected').val();
-        console.log(sketchName);
-
-        $.ajax({
-            url : "./scrapbook/" + sketchName + "/" + sketchName + ".pde",
-            success : loadSketch
-        });        
+        getSketch(sketchName);
     });
 
     var urlSketch = getParameterByName('sketch');
-    console.log(urlSketch);
+
     if (urlSketch !== null) {
-        $('#sketchlist > option[value="' + urlSketch + '"]').prop('selected', true).change();
+        getSketch(urlSketch);
     } else {
-        // select the first sketch from the dropdown
-        $('#sketchlist > option:eq(0)').prop('selected', true).change();        
+        var sketchName = $('#sketchlist option:selected').val();
+        getSketch(sketchName);
     }
 
 });
